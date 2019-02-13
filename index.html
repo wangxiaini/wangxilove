@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>妄曦</title>
+</head>
+<body>
+    <style class="cp-pen-styles">
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            width:100%;
+            height: 800px;
+        }
+         #p{
+            line-height: 30px;
+            color: #fff;
+            font-size: 20px;
+            display: block;
+            width: 50%;
+            margin: 0 auto;
+            margin-top: 50px;
+            position: fixed;
+            left:30%;
+            top:200px;
+        }
+        .box{
+            width: 100%;
+            height: 600px;
+            /*position: fixed;
+            top: 0;
+            left: 0;*/
+            padding: 8% 10%;
+            box-sizing: border-box;
+            position: absolute;
+            left:0;
+            top:30px;
+        }
+        .boox{
+            width: 100%;
+            height: 40px;
+        }
+        .boox input{
+            width: 100%;
+            height: 100%;
+            border: none;
+            font-size: 16px;
+            padding: 3% 3%;
+            box-sizing: border-box;
+            margin: 10px 0;
+            background: #f1f1f1;
+            
+        }
+        h3{
+            text-align: center;
+        }
+        .p::after{
+            content:"_";
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+        <audio src="./房东的猫 - 云烟成雨.mp3"  preload="auto" loop="loop">
+        </audio>
+    <div class="box">
+        <h3>写上你想说的话</h3>
+        <div class="boox">
+            <form id="myForm">
+                <input id="fname" type="text" placeholder='你的名字(会有彩蛋)' />
+                <input class="lname" type="text"  placeholder='你想说的话'/>
+                <input class="lname" type="text"  placeholder='你想说的话'/>
+                <input class="lname" type="text"  placeholder='你想说的话'/>
+                <input id="sub" type="button" value="GO" onclick='btn()'/>
+            </form>
+        </div>
+    </div>
+    <p id='p'>
+    </p>
+
+    <script src="js/three.min.js"></script>
+
+    <script>        //@remwks
+
+        var SCREEN_WIDTH = window.innerWidth,
+
+                SCREEN_HEIGHT = window.innerHeight,
+
+
+
+            r = 200,
+
+
+
+            mouseX = 0, mouseY = 0,
+
+
+
+            windowHalfX = window.innerWidth / 2,
+
+            windowHalfY = window.innerHeight / 2,
+
+
+
+            camera, scene, renderer;
+
+
+
+        init();
+
+        animate();
+
+
+
+        function init() {
+
+
+
+            var container;
+
+
+
+            container = document.createElement('div');
+
+            document.body.appendChild(container);
+
+
+
+            camera = new THREE.PerspectiveCamera(80, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 3000);
+
+            camera.position.z = 1000;
+
+
+
+            scene = new THREE.Scene();
+
+
+
+            var i, line, vertex1, vertex2, material, p,
+
+                    parameters = [[3.5, 0x90CEBF, 0.5, 1]],
+
+
+
+                    geometry = new THREE.Geometry();
+
+
+
+
+
+            for (i = 0; i < 1500; i++) {
+
+
+
+                var vertex1 = new THREE.Vector3();
+
+                vertex1.x = Math.random() * 2 - 1;
+
+                vertex1.y = Math.random() * 2 - 1;
+
+                vertex1.z = Math.random() * 2 - 1;
+
+                vertex1.normalize();
+
+                vertex1.multiplyScalar(r);
+
+
+
+                vertex2 = vertex1.clone();
+
+                vertex2.multiplyScalar(Math.random() * 0.09 + 1);
+
+
+
+                geometry.vertices.push(vertex1);
+
+                geometry.vertices.push(vertex2);
+
+
+
+            }
+
+
+
+            for (i = 0; i < parameters.length; ++i) {
+
+
+
+                p = parameters[i];
+
+
+
+                material = new THREE.LineBasicMaterial({ color: p[1], opacity: p[2], linewidth: p[3] });
+
+
+
+                line = new THREE.Line(geometry, material, THREE.LinePieces);
+
+                line.scale.x = line.scale.y = line.scale.z = p[0];
+
+                line.originalScale = p[0];
+
+                line.rotation.y = Math.random() * Math.PI;
+
+                line.updateMatrix();
+
+                scene.add(line);
+
+
+
+            }
+
+
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+
+            renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+            container.appendChild(renderer.domElement);
+
+
+
+            document.addEventListener('mousemove', onDocumentMouseMove, false);
+
+            document.addEventListener('touchstart', onDocumentTouchStart, false);
+
+            document.addEventListener('touchmove', onDocumentTouchMove, false);
+
+
+
+            //
+
+
+
+            window.addEventListener('resize', onWindowResize, false);
+
+
+
+        }
+
+
+
+        function onWindowResize() {
+
+
+
+            windowHalfX = window.innerWidth / 2;
+
+            windowHalfY = window.innerHeight / 2;
+
+
+
+            camera.aspect = window.innerWidth / window.innerHeight;
+
+            camera.updateProjectionMatrix();
+
+
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+
+
+        }
+
+
+
+        function onDocumentMouseMove(event) {
+
+
+
+            mouseX = event.clientX - windowHalfX;
+
+            mouseY = event.clientY - windowHalfY;
+
+
+
+        }
+
+
+
+        function onDocumentTouchStart(event) {
+
+
+
+            if (event.touches.length > 1) {
+
+
+
+                event.preventDefault();
+
+
+
+                mouseX = event.touches[0].pageX - windowHalfX;
+
+                mouseY = event.touches[0].pageY - windowHalfY;
+
+
+
+            }
+
+
+
+        }
+
+
+
+        function onDocumentTouchMove(event) {
+
+
+
+            if (event.touches.length == 1) {
+
+
+
+                event.preventDefault();
+
+
+
+                mouseX = event.touches[0].pageX - windowHalfX;
+
+                mouseY = event.touches[0].pageY - windowHalfY;
+
+
+
+            }
+
+
+
+        }
+
+
+
+        //
+
+
+
+        function animate() {
+
+
+
+            requestAnimationFrame(animate);
+
+
+
+            render();
+
+
+
+        }
+
+
+
+        function render() {
+
+
+
+            camera.position.y += (-mouseY + 200 - camera.position.y) * .05;
+
+            camera.lookAt(scene.position);
+
+
+
+            renderer.render(scene, camera);
+
+
+
+            var time = Date.now() * 0.0001;
+
+
+
+            for (var i = 0; i < scene.children.length; i++) {
+
+
+
+                var object = scene.children[i];
+
+
+
+                if (object instanceof THREE.Line) {
+
+
+
+                    object.rotation.y = time * (i < 4 ? (i + 1) : -(i + 1));
+
+
+
+
+
+                }
+
+
+
+            }
+
+
+
+        }
+
+        //@ sourceURL=pen.js
+        var x=document.getElementById("myForm");
+
+        var dueix={
+            id:'p',
+            str:[
+                '(✿◡‿◡)  ...                               ',
+                '不要担心,你的设备没有死机，也没有BUG，程序在正在运行。请观看完毕       谢谢...       '
+            ],
+            wrong:{
+                开:'楷'
+            },
+            data:200,
+            huidiao:function(){
+                document.querySelector('audio').play();
+            }
+        }
+        function btn(){
+            console.log(x.elements.fname.value)
+           var hua = document.querySelectorAll('.lnaem');
+            if(x.elements.fname.value == ''){
+                alert('名字也不写  太抠了吧');
+                return false
+            }
+
+
+            dueix.str.push(`${x.elements.fname.value}  ， 女士或者先生你好。     `);
+
+            for(let i=0;i<hua.length;i++){
+                if(!hua[i].value){
+                    dueix.str.push(`你想对我说：  ${hua.value}`)
+                } 
+            }
+            var hehda=[
+                '对话完毕....          ',
+                '你以为这样就完了？      ',
+                '哈哈哈！ 开玩笑（抱歉打错字了）        ',
+                '辛辛苦苦写了一晚上      ',
+                '怎么可能不多说点       ',
+                '首先自我介绍一下  ',
+                '我叫刘凯...  ',
+                '或者...  ',
+                '请叫我   Im chen xu yuan (程序猿)......         ',
+                '皮不皮...                    '
+            ]
+            dueix.str =  dueix.str.concat(hehda);
+
+            if(x.elements.fname.value == '肖娟') {
+                dueix.str.push('肖娟.. 你要偷偷的看哦 ... ')
+            }else{
+                dueix.str.push('没关系，接下来是彩蛋环节，虽然可能不全...        ')
+            }
+            switch (x.elements.fname.value) {
+                case '缑金升':
+                    dueix.str.push('老表！！！高考完之后千万别学前端，千万别学，千万别学，重要的事情说三遍')
+                    break;
+                case '郭晓欢':
+                    dueix.str.push('郭晓欢.....      奶奶级别的人物，不敢惹，不敢惹......         ')
+                    break;
+                case '葛伟荣':
+                    dueix.str.push('葛伟荣.....  你完了，我要跟你姐，聊聊你。哈哈.....    ')
+                    break;
+                case '齐思雅':
+                    dueix.str.push('齐思雅....    请问779是谁      ')
+                    break;
+                case '白娟':
+                    dueix.str.push('白娟.....  其实玩游戏的人很单纯，所以阿飞就爱玩游戏......      ')
+                    break;
+                case '孙明明':
+                    dueix.str.push('孙明明....  葛伟荣给你的网站学完了没有.......  ')
+                    break;
+                case '李冲冲':
+                    dueix.str.push('李冲冲....   我一直不晓得是李冲还是叫李冲冲....  ')
+                    break;
+                case '韩茜茜':
+                    dueix.str.push('韩茜茜....   韩xixi，韩qianqian ......   ')
+                    break;
+                case '董健飞':
+                    dueix.str.push('阿飞...   白娟挺不错的....   ')
+                    break;
+                case '岳帅振':
+                    dueix.str.push('岳帅振.....  换过来感觉怎么样啊...       ')
+                    break;
+                case '李忠霖': 
+                    dueix.str.push('李忠霖...   花总，你好！        ')
+                    break;
+                case '张思博':
+                    dueix.str.push('张思博...   一个白白胖胖的X子...     ')
+                    break;
+                case '王闯':
+                    dueix.str.push('王闯...   给我留个位置，等我出去也跟你们一起住...     ')
+                    break;
+                case '马彩月':
+                    dueix.str.push('马彩月...  传说中的 MC小六... 马氏不败，千秋万代........         ')
+                    break;
+                case '王岳岩':
+                    dueix.str.push('王岳岩...  减肥茶喝完了没啊...       ')
+                    break;
+                case '陈洪涛':
+                    dueix.str.push('陈洪涛...  河南老乡啊...      ')
+                    break;
+                case '张铭轩':
+                    dueix.str.push('张铭轩，没啥说的  就一句话。秀恩爱死的快...       ')
+                    break;
+                case '马道坤':
+                    dueix.str.push('马道坤...   固始鹅块挺好吃的，虽然我不吃.....      ')
+                    break;
+                case '王晨宇':
+                    dueix.str.push('王晨宇...  我们一起打lol，打着打着你就走了...      ')
+                    break;
+                case '肖娟':
+                    dueix.str.push('肖娟 ......        那个西瓜吃完了吗？......   (*^__^*) 嘻嘻 ')
+                    break;
+                case '张丽': 
+                    dueix.str.push('张丽...    有点想念你.....       的喷雾  哈哈......       ')
+                    break;
+                case '赵丹':
+                    dueix.str.push('赵丹...不对....   丹姐好   (求生欲还是很强的吧).......      ')
+                    break;
+                case '金聪聪':
+                    dueix.str.push('金聪聪...  金家二小姐，最近怎么样啊...      ')
+                    break;
+                case '梁新宇':
+                    dueix.str.push('新宇...  来上号，都这么久没大了...     ')
+                    break;
+                default:
+                    dueix.str.push('很抱歉，没有彩蛋 不过请把声音打开，开到最大谢谢......     '  )
+                    break;
+            }
+            
+            dueix.str.push(`好了不皮了   ${x.elements.fname.value}   请把声音打开，谢谢合作.....     `  )
+            dueix.str.push('接下来请听一首歌')
+
+            document.querySelector('.box').style.display = 'none';   
+            document.querySelector('body').style.background = '#000';   
+            var hehe = new strxll(dueix);
+            
+        }
+
+    </script>
+        
+    <script src="/scripts/2bc/_gg_970_90.js" type="text/javascript"></script>
+    <script src='./js/index.js'></script>
+</body>
+</html>
+
+
